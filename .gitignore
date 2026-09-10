@@ -1,0 +1,11 @@
+# CLAUDE.md 属本地 Claude 资产，不入本仓 git（系列通例；canonical 在 ai-foundation-memory/claude/）
+CLAUDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+
+# 产物
+specs/
