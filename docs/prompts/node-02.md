@@ -17,7 +17,7 @@ flowchart TD
     C1 -->|通过| INT["交互中断 §3.1<br/>needs_input + resume_token"]
     INT --> ANS["用户作答 answers"]
     ANS --> S2["步2 事实归并 · L1<br/>规范化 + 保留原话"]
-    S2 --> C2{"校验<br/>source ∈ 本轮提问 · unresolved 不填值"}
+    S2 --> C2{"校验<br/>source ∈ 本轮提问 · unresolved 不填值<br/>certainty / origin 必填"}
     C2 -->|不过| S2
     C2 -->|通过| S3{"步3 收敛判定 · L0<br/>待问清单空？"}
     S3 -->|否| S1
@@ -25,15 +25,16 @@ flowchart TD
     S4 --> C4{"校验<br/>evidence 指得出依据"}
     C4 -->|不过| S4
     C4 -->|通过| S1
-    S3 -->|是 · 敏感点已判| S5["步5 req 草拟 · L1<br/>按骨架汇总"]
-    S5 --> G2{"闸2<br/>段齐备 · trace 或待定+触发<br/>边界有排除 · 目标可验收 · 无越界词"}
-    G2 -->|不过| S5
+    S3 -->|是 · 敏感点已判| S5["步5 收尾探针 · L1<br/>开放式一次"]
+    S5 --> S6["步6 req 草拟 · L1<br/>按骨架汇总"]
+    S6 --> G2{"闸2<br/>段齐备 · trace 或待定+触发<br/>边界有排除 · 目标可验收<br/>无越界词 · 依据含明确+用户来源"}
+    G2 -->|不过| S6
     G2 -->|通过| OUT["req.md（交付）"]
 
     classDef llm fill:#1e4976,stroke:#7cb3e8,color:#ffffff
     classDef det fill:#7a4a00,stroke:#e8b25c,color:#ffffff
     classDef gate fill:#1b5e3a,stroke:#6cc79b,color:#ffffff
-    class S1,S2,S4,S5 llm
+    class S1,S2,S4,S5,S6 llm
     class S0,C1,C2,C4,S3 det
     class INT,ANS,G2,OUT gate
 ```
@@ -137,14 +138,18 @@ flowchart TD
 用户口语 ↔ 专业语对照：{{lexicon}}
 
 规则：
-- 每个回答归并成一条事实：`{dimension, value, source, quote, unresolved}`。
+- 每个回答归并成一条事实：`{dimension, value, source, quote, unresolved, certainty, origin}`。
 - 用语义替换表把口语**规范化**，但**保留原话**。
 - 回答含糊/答不上 → 标 `unresolved: true`，**不要编**。
+- **必须给两个质量标记**（缺一不可）：
+  - `certainty`：`明确` | `含糊` —— 用户答得肯定还是模棱两可（"大概吧""看情况" → `含糊`）
+  - `origin`：`用户` | `兜底` | `联网` —— 这条事实从哪来
 - 回答里出现**新的可追问线索** → 放 `followups`（附依据）。
 
 输出 JSON：
 {
-  "facts": [{"dimension":"<问题维度 id>", "value":"...", "source":"Q-x", "quote":"<原话>", "unresolved":false}],
+  "facts": [{"dimension":"<问题维度 id>", "value":"...", "source":"Q-x", "quote":"<原话>",
+             "unresolved":false, "certainty":"明确|含糊", "origin":"用户|兜底|联网"}],
   "followups": [{"dimension":"...", "why":"..."}]
 }
 ```
@@ -174,6 +179,9 @@ flowchart TD
 | 1 | `source` ∈ 本轮提问集 |
 | 2 | `unresolved == true` 的条目**不得**填具体 `value` |
 | 3 | `followups[].dimension` ∈ 问题维度表 |
+| 4 | **`certainty` / `origin` 必填**且取值合法（通则 ⑥） |
+
+> **质量标记的用途**：下游凡以事实为依据处（节点 3 规则、节点 4 架构初判），要求 `basis` **至少含 1 条 `certainty=明确` 且 `origin=用户`** 的事实；不足则不得给结论。**含糊与兜底的事实不能当依据用。**
 
 > 事实集**不给 ID**——用 `source: Q#` 溯源即可，避免 ID 命名空间膨胀。
 
@@ -244,7 +252,43 @@ flowchart TD
 
 ---
 
-## 步 5 · req 草拟（L1）+ 闸 2
+## 步 5 · 收尾探针（L1 · 一次）
+
+**接住"未知的未知"**——覆盖闭环校验（DESIGN §4.2）只能保证**已声明维度**不出缺口；这一步兜住我们没枚举到的。
+
+```
+在结束提问前，问一句**开放式收尾**——不问任何已问过的维度。
+
+已收集事实（仅作上下文，**不要重复问**）：{{facts}}
+
+规则：
+- **开放式**：不枚举维度、不列选项。
+- 一句话，大白话。
+- 可举几个**示意方向**帮用户想起来（如"将来还会加什么、谁维护、什么时候要上线"），
+  但**不得**把它们变成必答项。
+- 用户答"没有"即结束，**不要追问**。
+
+输出 JSON：
+{ "ask": "<开放式问句>", "answer": "<用户回答，可为空>" }
+```
+
+**期望输出**：
+
+```json
+{
+  "ask": "除了上面这些，还有什么会影响你打算怎么做这个系统的事，是我该知道的吗？比如将来还会加什么、谁维护、什么时候要上线。",
+  "answer": "以后可能想让门店自己也能看数据，不过那是后话。"
+}
+```
+
+**处理**：回答按步 2 的方式归并为事实（**带质量标记**），直接并入事实集，**不解锁新轮**。
+若其中出现**节点 4 架构维度所需的事实**（如上面那句提供的 `F-EVOLUTION`），节点 4 会用到它。
+
+**校验**：`ask` 不得复述任何**已问过**的维度；仅执行一次。
+
+---
+
+## 步 6 · req 草拟（L1）+ 闸 2
 
 ```
 你是需求规格草拟。依据已收集事实，按给定骨架草拟 req。
