@@ -51,7 +51,7 @@ flowchart TD
 
 ---
 
-## 步 0 · 触发扫描（L1）
+## 步 0 · 维度圈定 + 触发扫描（L1 + 并集）
 
 ```
 你是架构维度触发扫描。对每个架构维度，判断**它在这个项目里是否被触发**。
@@ -70,8 +70,23 @@ flowchart TD
 - **不给方案、不给结论**——这一步只判"要不要管这一维"。
 
 输出 JSON：
-{ "triggers": [ {"dimension":"<维度 id>", "triggered": true|false|"unknown", "basis":["<事实键或事件名>"], "why":"..."} ] }
+{
+  "triggers": [ {"dimension":"<维度 id>", "triggered": true|false|"unknown", "basis":["<事实键或事件名>"], "why":"..."} ],
+  "proposed_dimensions": [
+    {"dimension": "...", "why": "<为什么这个项目需要它>",
+     "needs_facts": ["F-..."], "source": "proposed",
+     "proposed_question": {"id":"...", "ask":"<大白话>", "provides_facts":["F-..."]}}
+  ]
+}
 ```
+
+**并集形态**（DESIGN §2.3.0 ⑨）——维度集 = **资产架构组 ∪ LLM 新增**：
+
+- 新增维度标 `source: proposed`，**必须同时给出 `proposed_question`**——即"能提供其 `needs_facts` 的提问条目"（问题库本身也走并集，**两个并集复合**）；
+- 给不出对应提问条目的新增维度 → **直接判 `挂起`**（不许凭空挂一个永远无法判定的维度）；
+- 约束：① `source` 标记；② 与资产维度**去重**（同义合并）；③ **总量上限**；④ **只扩候选池、不扩提问量**；⑤ 走 §4.8 沉淀闸。
+
+**校验补充**：`proposed_dimensions[].needs_facts` 必须 ⊆ （资产 `provides_facts` ∪ 本次新增 `proposed_question.provides_facts`）——**运行版覆盖闭环**（静态版见 DESIGN §4.2）。
 
 **期望输出**（商城）：
 
