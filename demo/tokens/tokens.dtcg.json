@@ -1,0 +1,106 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "视觉 token 源（source of truth，不是中间产物）。映射层不认识这个文件。",
+
+  "color": {
+    "$type": "color",
+    "background": { "$value": "#ffffff" },
+    "foreground": { "$value": "#0f172a" },
+    "card": { "$value": "#ffffff" },
+    "card-foreground": { "$value": "#0f172a" },
+    "popover": { "$value": "#ffffff" },
+    "popover-foreground": { "$value": "#0f172a" },
+    "primary": { "$value": "#1d4ed8" },
+    "primary-foreground": { "$value": "#ffffff" },
+    "secondary": { "$value": "#f1f5f9" },
+    "secondary-foreground": { "$value": "#0f172a" },
+    "muted": { "$value": "#f1f5f9" },
+    "muted-foreground": { "$value": "#64748b" },
+    "accent": { "$value": "#e2e8f0" },
+    "accent-foreground": { "$value": "#0f172a" },
+    "destructive": { "$value": "#dc2626" },
+    "destructive-foreground": { "$value": "#ffffff" },
+    "border": { "$value": "#e2e8f0" },
+    "input": { "$value": "#e2e8f0" },
+    "ring": { "$value": "#1d4ed8" }
+  },
+
+  "radius": {
+    "$type": "dimension",
+    "base": { "$value": { "value": 0.625, "unit": "rem" } }
+  },
+
+  "space": {
+    "$description": "间距**基准**。组件间距 = 基准 × 组件自己的倍数（gap-3 = 3 × base）。",
+    "$type": "dimension",
+    "base": { "$value": { "value": 4, "unit": "px" } }
+  },
+
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Inter", "ui-sans-serif", "system-ui", "-apple-system",
+                 "Segoe UI", "Noto Sans SC", "sans-serif"]
+    }
+  },
+
+  "weight": {
+    "$type": "fontWeight",
+    "medium": { "$value": 500 },
+    "semibold": { "$value": 600 },
+    "bold": { "$value": 700 }
+  },
+
+  "text": {
+    "$description": "字号阶梯（DTCG typography 复合类型）。lineHeight 为无单位倍数。",
+    "$type": "typography",
+    "xs": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 0.75, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.33
+      }
+    },
+    "sm": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 0.875, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.43
+      }
+    },
+    "base": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 1, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.5
+      }
+    },
+    "lg": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 1.125, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.44
+      }
+    },
+    "xl": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 1.25, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.4
+      }
+    },
+    "2xl": {
+      "$value": {
+        "fontFamily": "{font.sans}",
+        "fontSize": { "value": 1.5, "unit": "rem" },
+        "fontWeight": 400,
+        "lineHeight": 1.33
+      }
+    }
+  }
+}

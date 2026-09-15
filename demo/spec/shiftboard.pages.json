@@ -1,0 +1,229 @@
+{
+  "schema_version": "pages/0.2",
+  "scenario": "值班表换班",
+
+  "shell": {
+    "_note": "外壳：跨屏常驻。用「模式」不用「位置」——`侧边导航` 而非 `导航放左边`。",
+    "mode": "侧边导航",
+    "title": "值班管理台",
+    "menus": [
+      {
+        "label": "排班管理",
+        "items": [
+          { "label": "值班表", "goto": "SCR1" },
+          { "label": "换班申请", "goto": "SCR2" }
+        ]
+      },
+      {
+        "label": "人员管理",
+        "items": [
+          { "label": "人员名单", "goto": "SCR4" },
+          { "label": "人员详情", "goto": "SCR5" }
+        ]
+      },
+      {
+        "label": "统计报表",
+        "items": [{ "label": "工时统计", "goto": "SCR6" }]
+      }
+    ]
+  },
+
+  "screens": [
+    {
+      "id": "SCR1",
+      "title": "值班表",
+      "layout": "列表页",
+      "blocks": [
+        {
+          "kind": "页头",
+          "title": "本月值班表",
+          "description": "查看排班，点每行的「申请换班」发起换班"
+        },
+        {
+          "kind": "筛选栏",
+          "fields": [
+            { "id": "F-RANGE", "label": "日期范围", "type": "日期区间" },
+            { "id": "F-STATE-F", "label": "状态", "type": "单选", "options": ["全部", "正常", "已有申请"] }
+          ]
+        },
+        {
+          "kind": "数据表格",
+          "source": { "op": "OP1", "entity": "ENT2" },
+          "columns": [
+            { "field": "date", "label": "日期", "type": "日期" },
+            { "field": "shift", "label": "班次", "type": "文本" },
+            { "field": "owner", "label": "值班人", "type": "文本" },
+            {
+              "field": "state",
+              "label": "状态",
+              "type": "状态",
+              "value_semantics": { "正常": "中性", "已有申请": "警告", "已换班": "提示" }
+            }
+          ],
+          "row_actions": [
+            { "label": "申请换班", "op": "OP2", "goto": "SCR2", "visible_when_rule": "R2" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "SCR2",
+      "title": "换班申请",
+      "layout": "表单页",
+      "blocks": [
+        {
+          "kind": "页头",
+          "title": "申请换班",
+          "description": "提交后等对方接受，生效前可撤回"
+        },
+        {
+          "kind": "表单",
+          "op": "OP2",
+          "fields": [
+            { "id": "F-SHIFT", "label": "要换的班次", "type": "只读文本", "value_from": "selection.shift" },
+            {
+              "id": "F-TO",
+              "label": "换给谁",
+              "type": "引用选择",
+              "options_from": "ENT1.name",
+              "placeholder": "选择接班的同事",
+              "required": true
+            },
+            {
+              "id": "F-REASON",
+              "label": "换班原因",
+              "type": "长文本",
+              "placeholder": "简单说明一下原因",
+              "required": true,
+              "max_length": 200
+            }
+          ],
+          "actions": [
+            {
+              "label": "提交申请",
+              "tone": "主操作",
+              "op": "OP2",
+              "on_success": { "goto": "SCR3" },
+              "on_failure": [
+                { "when": "R1", "feedback": "这个班次已经有人在申请换班了", "target": "F-SHIFT" }
+              ]
+            },
+            { "label": "取消", "tone": "次操作", "goto": "SCR1" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "SCR3",
+      "title": "提交结果",
+      "layout": "结果页",
+      "_note": "流程终点，不在菜单里（菜单只放可导航的功能页）",
+      "blocks": [
+        {
+          "kind": "结果提示",
+          "tone": "成功",
+          "title": "换班申请已提交",
+          "description": "等对方接受后生效，可在值班表查看状态"
+        },
+        {
+          "kind": "详情摘要",
+          "title": "申请内容",
+          "items": [
+            { "label": "班次", "value_from": "submission.F-SHIFT" },
+            { "label": "换给", "value_from": "submission.F-TO" },
+            { "label": "原因", "value_from": "submission.F-REASON" }
+          ]
+        },
+        {
+          "kind": "操作组",
+          "actions": [{ "label": "返回值班表", "tone": "主操作", "goto": "SCR1" }]
+        }
+      ]
+    },
+
+    {
+      "id": "SCR4",
+      "title": "人员名单",
+      "layout": "列表页",
+      "blocks": [
+        { "kind": "页头", "title": "人员名单", "description": "本组成员与联系方式" },
+        {
+          "kind": "筛选栏",
+          "fields": [{ "id": "F-NAME", "label": "姓名", "type": "文本", "placeholder": "输入姓名搜索" }]
+        },
+        {
+          "kind": "数据表格",
+          "source": { "op": "OP3", "entity": "ENT1" },
+          "columns": [
+            { "field": "name", "label": "姓名", "type": "文本" },
+            { "field": "team", "label": "班组", "type": "文本" },
+            { "field": "phone", "label": "联系方式", "type": "文本" },
+            {
+              "field": "state",
+              "label": "在岗状态",
+              "type": "状态",
+              "value_semantics": { "在岗": "中性", "休假": "警告", "借调": "提示" }
+            }
+          ],
+          "row_actions": [
+            {
+              "_note": "carry：把这一行的值**作为导航上下文**带过去（不是另存一份状态）",
+              "label": "查看详情",
+              "goto": "SCR5",
+              "carry": { "key": "person", "field": "name" }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "SCR5",
+      "title": "人员详情",
+      "layout": "详情页",
+      "blocks": [
+        { "kind": "页头", "title": "人员详情", "description": "基本信息与本月排班量" },
+        {
+          "kind": "详情摘要",
+          "title": "基本信息",
+          "items": [
+            { "label": "姓名", "value_from": "runtime.nav.context.person" },
+            { "label": "班组", "value_from": "selection.team" },
+            { "label": "联系方式", "value_from": "selection.phone" },
+            { "label": "本月班次", "value_from": "selection.shifts" }
+          ]
+        },
+        {
+          "kind": "操作组",
+          "actions": [{ "label": "返回名单", "tone": "次操作", "goto": "SCR4" }]
+        }
+      ]
+    },
+
+    {
+      "id": "SCR6",
+      "title": "工时统计",
+      "layout": "列表页",
+      "blocks": [
+        { "kind": "页头", "title": "本月工时统计", "description": "按人汇总，供排班参考" },
+        {
+          "kind": "数据表格",
+          "source": { "op": "OP4", "entity": "ENT4" },
+          "columns": [
+            { "field": "name", "label": "姓名", "type": "文本" },
+            { "field": "shifts", "label": "班次数", "type": "文本" },
+            { "field": "hours", "label": "总工时", "type": "文本" },
+            {
+              "field": "state",
+              "label": "是否超量",
+              "type": "状态",
+              "value_semantics": { "正常": "中性", "偏高": "警告" }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

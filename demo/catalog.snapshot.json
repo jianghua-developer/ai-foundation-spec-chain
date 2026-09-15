@@ -1,0 +1,417 @@
+{
+  "Card": {
+    "props": [
+      "title",
+      "description",
+      "maxWidth",
+      "centered",
+      "className"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Container card for content sections. Use for forms/content boxes, NOT for page headers."
+  },
+  "Stack": {
+    "props": [
+      "direction",
+      "gap",
+      "align",
+      "justify",
+      "className"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Flex container for layouts"
+  },
+  "Grid": {
+    "props": [
+      "columns",
+      "gap",
+      "className"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Grid layout (1-6 columns)"
+  },
+  "Separator": {
+    "props": [
+      "orientation"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Visual separator line"
+  },
+  "Tabs": {
+    "props": [
+      "tabs",
+      "defaultValue",
+      "value"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [
+      "change"
+    ],
+    "description": "Tab navigation. Use { $bindState } on value for active tab binding."
+  },
+  "Accordion": {
+    "props": [
+      "items",
+      "type"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Collapsible sections. Items as [{title, content}]. Type 'single' (default) or 'multiple'."
+  },
+  "Collapsible": {
+    "props": [
+      "title",
+      "defaultOpen"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Collapsible section with trigger. Children render inside."
+  },
+  "Dialog": {
+    "props": [
+      "title",
+      "description",
+      "openPath"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Modal dialog. Set openPath to a boolean state path. Use setState to toggle."
+  },
+  "Drawer": {
+    "props": [
+      "title",
+      "description",
+      "openPath"
+    ],
+    "slots": [
+      "default"
+    ],
+    "events": [],
+    "description": "Bottom sheet drawer. Set openPath to a boolean state path. Use setState to toggle."
+  },
+  "Carousel": {
+    "props": [
+      "items"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Horizontally scrollable carousel of cards."
+  },
+  "Table": {
+    "props": [
+      "columns",
+      "rows",
+      "caption"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Data table. columns: header labels. rows: 2D array of cell strings, e.g. [[\"Alice\",\"admin\"],[\"Bob\",\"user\"]]."
+  },
+  "Heading": {
+    "props": [
+      "text",
+      "level"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Heading text (h1-h4)"
+  },
+  "Text": {
+    "props": [
+      "text",
+      "variant"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Paragraph text"
+  },
+  "Image": {
+    "props": [
+      "src",
+      "alt",
+      "width",
+      "height"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Image component. Renders an img tag when src is provided, otherwise a placeholder."
+  },
+  "Avatar": {
+    "props": [
+      "src",
+      "name",
+      "size"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "User avatar with fallback initials"
+  },
+  "Badge": {
+    "props": [
+      "text",
+      "variant"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Status badge"
+  },
+  "Alert": {
+    "props": [
+      "title",
+      "message",
+      "type"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Alert banner"
+  },
+  "Progress": {
+    "props": [
+      "value",
+      "max",
+      "label"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Progress bar (value 0-100)"
+  },
+  "Skeleton": {
+    "props": [
+      "width",
+      "height",
+      "rounded"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Loading placeholder skeleton"
+  },
+  "Spinner": {
+    "props": [
+      "size",
+      "label"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Loading spinner indicator"
+  },
+  "Tooltip": {
+    "props": [
+      "content",
+      "text"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Hover tooltip. Shows content on hover over text."
+  },
+  "Popover": {
+    "props": [
+      "trigger",
+      "content"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Popover that appears on click of trigger."
+  },
+  "Input": {
+    "props": [
+      "label",
+      "name",
+      "type",
+      "placeholder",
+      "value",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [
+      "submit",
+      "focus",
+      "blur"
+    ],
+    "description": "Text input field. Use { $bindState } on value for two-way binding. Use checks for validation (e.g. required, email, minLength). validateOn controls timing (default: blur)."
+  },
+  "Textarea": {
+    "props": [
+      "label",
+      "name",
+      "placeholder",
+      "rows",
+      "value",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [],
+    "description": "Multi-line text input. Use { $bindState } on value for binding. Use checks for validation. validateOn controls timing (default: blur)."
+  },
+  "Select": {
+    "props": [
+      "label",
+      "name",
+      "options",
+      "placeholder",
+      "value",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Dropdown select input. Use { $bindState } on value for binding. Use checks for validation. validateOn controls timing (default: change)."
+  },
+  "Checkbox": {
+    "props": [
+      "label",
+      "name",
+      "checked",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Checkbox input. Use { $bindState } on checked for binding. Use checks for validation. validateOn controls timing (default: change)."
+  },
+  "Radio": {
+    "props": [
+      "label",
+      "name",
+      "options",
+      "value",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Radio button group. Use { $bindState } on value for binding. Use checks for validation. validateOn controls timing (default: change)."
+  },
+  "Switch": {
+    "props": [
+      "label",
+      "name",
+      "checked",
+      "checks",
+      "validateOn"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Toggle switch. Use { $bindState } on checked for binding. Use checks for validation. validateOn controls timing (default: change)."
+  },
+  "Slider": {
+    "props": [
+      "label",
+      "min",
+      "max",
+      "step",
+      "value"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Range slider input. Use { $bindState } on value for binding."
+  },
+  "Button": {
+    "props": [
+      "label",
+      "variant",
+      "disabled"
+    ],
+    "slots": [],
+    "events": [
+      "press"
+    ],
+    "description": "Clickable button. Bind on.press for handler."
+  },
+  "Link": {
+    "props": [
+      "label",
+      "href"
+    ],
+    "slots": [],
+    "events": [
+      "press"
+    ],
+    "description": "Anchor link. Bind on.press for click handler."
+  },
+  "DropdownMenu": {
+    "props": [
+      "label",
+      "items",
+      "value"
+    ],
+    "slots": [],
+    "events": [
+      "select"
+    ],
+    "description": "Dropdown menu with trigger button and selectable items. Use { $bindState } on value for selected item binding."
+  },
+  "Toggle": {
+    "props": [
+      "label",
+      "pressed",
+      "variant"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Toggle button. Use { $bindState } on pressed for state binding."
+  },
+  "ToggleGroup": {
+    "props": [
+      "items",
+      "type",
+      "value"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Group of toggle buttons. Type 'single' (default) or 'multiple'. Use { $bindState } on value."
+  },
+  "ButtonGroup": {
+    "props": [
+      "buttons",
+      "selected"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Segmented button group. Use { $bindState } on selected for selected value."
+  },
+  "Pagination": {
+    "props": [
+      "totalPages",
+      "page"
+    ],
+    "slots": [],
+    "events": [
+      "change"
+    ],
+    "description": "Page navigation. Use { $bindState } on page for current page number."
+  }
+}

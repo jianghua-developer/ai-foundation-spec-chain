@@ -1,0 +1,30 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "第二份 token 源。**用来验证：换一份 token，页面变样，而映射层一行不改。**",
+  "color": {
+    "$type": "color",
+    "background": { "$value": "#0b1120" },
+    "foreground": { "$value": "#e2e8f0" },
+    "card": { "$value": "#111a2e" },
+    "card-foreground": { "$value": "#e2e8f0" },
+    "popover": { "$value": "#111a2e" },
+    "popover-foreground": { "$value": "#e2e8f0" },
+    "primary": { "$value": "#60a5fa" },
+    "primary-foreground": { "$value": "#0b1120" },
+    "secondary": { "$value": "#1e293b" },
+    "secondary-foreground": { "$value": "#e2e8f0" },
+    "muted": { "$value": "#1e293b" },
+    "muted-foreground": { "$value": "#94a3b8" },
+    "accent": { "$value": "#1e293b" },
+    "accent-foreground": { "$value": "#e2e8f0" },
+    "destructive": { "$value": "#f87171" },
+    "destructive-foreground": { "$value": "#0b1120" },
+    "border": { "$value": "#1e293b" },
+    "input": { "$value": "#1e293b" },
+    "ring": { "$value": "#60a5fa" }
+  },
+  "radius": {
+    "$type": "dimension",
+    "base": { "$value": { "value": 0.625, "unit": "rem" } }
+  }
+}
